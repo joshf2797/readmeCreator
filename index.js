@@ -1,5 +1,7 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
+const generateMarkdown = require('./utils/generateMarkdown');
+
 
 const questions = [
     {
@@ -14,30 +16,23 @@ const questions = [
     },
     {
         type: 'input',
-        name: 'contents',
-        message: 'What is your table of contents?',
-        if {}
-    },
-    {
-        type: 'input',
         name: 'install',
         message: 'Instructions for installation if applicable.'
     },
     {
         type: 'input',
         name: 'usage',
-        message: 'Provide'
+        message: 'What is this project usage for?'
     },
     {
         type: 'list',
         name: 'license',
         message: 'Choose the license for the project:',
         choices: [
-            "ICS",
             "MIT",
-            "Mozilla",
-            "GNU",
-            "Apache",
+            "Apache 2.0",
+            "GPLv2",
+            "BSD 3-clause",
             "None"
         ]
     },
@@ -61,23 +56,12 @@ const questions = [
 
 inquirer.prompt(questions).then(answers => {
     createMD(answers);
-    console.log(`The title of my project is ${answers.title} and my email is ${answers.description}`)
 });
-// this is a function called createMD that creates the README and holds the template layout of that README
+
 const createMD = data => {
-    const template =`# ${data.title}
-    
-## Description 
-${data.description}
-
-<br><br>
-
-## Table of Contents
-1. ${data.contents}
-`
-
-    console.log(template);
-    fs.writeFile('README.md' , template, err => {
-        err ? console.log(err) : console.log("Success!")
-    })
-}
+    const template =
+    generateMarkdown(data);
+    fs.writeFile('README.md', template, (err) => {
+        err ? console.log(err) : console.log('Success!');
+    });
+};
